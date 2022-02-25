@@ -7,3 +7,5 @@ Web3 API for native--- getBlock, getDateToBlock, getLogsByAddress, getNFTTransfe
 --> ABI is generate when we Deploy our Smart contract
 
 --> ABI is generated in JSON formate.
+
+--> If we are using Contract Address then we also need to use ABI. Without ABI we can not access the Contract address.
