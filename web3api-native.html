@@ -23,71 +23,13 @@
         <!-- Jumbotron -->
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-4">WEB3API NATIVE</h1>
+                <h2 class="display-4">WEB3API NATIVE Get Block Data</h2>
                 <button id="logout_button" onclick="logout()">Logout</button>
                 <button id="login_button" onclick="login()">Sign in with MetaMask</button>
               
               
               
-              <script>//------------------------------------------------------------------------>
-                  const  serverUrl = "https://wkp5bzmzv9bc.usemoralis.com:2053/server"; // server url
-                  const  appId = ("5EQpZ5cIhS14nwLU1NIpM1zk6JDo2XBtqDZJ26kV"); //App id
-
-                    Moralis.start({ serverUrl, appId});
-
-
-            
-                  async function login() {
-                    console.log("login clicked....");
-                    // const web3 = await Moralis.enable("WalletConnect");
-                    var Loginuser = await Moralis.Web3.authenticate(); //this basic one line for login with the metamask
-                    console.log(Moralis.Web3,'web3');
-                    if (Loginuser) {
-                      console.log(Loginuser);
-                    }
-                    checkUser();
-                  }
-                  async function logout() {
-            await Moralis.User.logOut();
-            checkUser();
-        }
-
-
-        checkUser = () => {
-        // FUNCTION CLICK LISTENER
-
-            currentUser = Moralis.User.current();
-            if (currentUser) {
-                document.getElementById("login_button").style.display = "none";
-                document.getElementById("logout_button").style.display = "block";
-                document.getElementById("content").style.display = "block";
-            } else {
-                document.getElementById("login_button").style.display = "block";
-                document.getElementById("logout_button").style.display = "none";
-                document.getElementById("content").style.display = "none";
-            }
-        }
-
-        // NATIVE WEB3API FUNCTIONS MORALIS CODE GET BLOCK
-        async function getBlock() {
-            let content = document.getElementById('content-getBlock')
-            content.innerHTML = "";
-            const _chain = document.getElementById('select-getBlock').value
-            const _block_number_or_hash = document.getElementById('getBlock-block').value
-
-            const options = { chain: _chain, block_number_or_hash: _block_number_or_hash };
-            const transactions = await Moralis.Web3API.native.getBlock(options);
-            
-            console.log(transactions)
-            Object.keys(transactions).forEach(e=>{
-                let div = document.createElement('div');
-                div.innerHTML = `<p><span class="h5">${e}</span>: ${transactions[e]}</p>`
-                content.appendChild(div);
-            });
-        }
-
-                </script> 
-                <!-- ---------------------------------------------------------------------- -->
+           
                 
             </div>
         </div>
@@ -120,8 +62,187 @@
                         <div id="content-getBlock" class="my-4 h6 text-break"></div>
                     </div>
                 </div>
+
+<!-- GET DATE TO BLOCK -->
+<div class="border-bottom " id="get-date-to-block">
+    <div class="col-md-6 my-4 container">
+        <h3>Get Date To Block</h3>
+        <p>Retrieve the closest block of the provided date (asynchronous).</p>
+        <div>
+            <select class="form-select" id="select-getDateToBlock">
+                <option selected>Which chain (required)?</option>
+                <option value="eth">Ethereum Mainnet</option>
+                <option value="ropsten">Ropsten</option>
+                <option value="rinkeby">Rinkeby</option>
+                <option value="goerli">Goerli </option>
+                <option value="kovan">Kovan </option>
+                <option value="bsc">Binance Smart Chain (main)</option>
+                <option value="bsc testnet">Binance Smart Chain (test)</option>
+                <option value="matic">Polygon (Matic) Mainnet</option>
+                <option value="mumbai">Mumbai (Matic Testnet)</option>
+            </select>
+        </div><br>
+        <div class="dflex justify-content-center">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">Date or timestamp</span>
+                </div>
+                <input type="date" id="getDateToBlock-date1" class="form-control" placeholder="choose a date">
+                <input type="text" id="getDateToBlock-date2" class="form-control" placeholder="or choose a timestamp">
+            </div>
+        </div>
+        <br>
+        <button class="btn btn-primary" onclick="getDateToBlock()">Get Date To Block</button>
+        <div id="content-getDateToBlock" class="my-4 text-break"></div>
+    </div>
+</div>
+
+
+<!-- GET LOGS BY ADDRESS -->
+<div class="border-bottom py-4" id="get-logs-by-address">
+    <div class="col-md-6 my-4 container">
+        <h3>🔥 Get Logs By Address</h3>
+        <p>Retrieve the logs from an address (asynchronous). </p>
+        <div class="my-4">
+            <select class="form-select" id="getLogsByAddress-chain">
+                <option selected>Which chain (required)?</option>
+                <option value="eth">Ethereum Mainnet</option>
+                <option value="ropsten">Ropsten</option>
+                <option value="rinkeby">Rinkeby</option>
+                <option value="goerli">Goerli </option>
+                <option value="kovan">Kovan </option>
+                <option value="bsc">Binance Smart Chain (main)</option>
+                <option value="bsc testnet">Binance Smart Chain (test)</option>
+                <option value="matic">Polygon (Matic) Mainnet</option>
+                <option value="mumbai">Mumbai (Matic Testnet)</option>
+            </select><br>
+            <input type="text" id="getLogsByAddress-address" class="form-control" placeholder="A smart contract address (required)">
+            <!-- <input type="text" id="from_date-getLogsByAddress" class="form-control" placeholder="The date from where to get the transactions (optional)">
+            <input type="text" id="to_date-getLogsByAddress" class="form-control" placeholder="Get the transactions to this date (optional)">
+            <input type="text" id="from_block-getLogsByAddress" class="form-control" placeholder="The minimum block number to get the transactions (optional)">
+            <input type="text" id="to_block-getLogsByAddress" class="form-control" placeholder=" The maximum block number to get the transactions (optional)">
+            <input type="text" id="topic0-getLogsByAddress" class="form-control" placeholder="Event topic 0 (optional)">
+            <input type="text" id="topic1-getLogsByAddress" class="form-control" placeholder="Event topic 1 (optional)">
+            <input type="text" id="topic2-getLogsByAddress" class="form-control" placeholder="Event topic 2 (optional)">
+            <input type="text" id="topic3-getLogsByAddress" class="form-control" placeholder="Event topic 3 (optional)"> -->
+        </div>
+        <button class="btn btn-primary" onclick="getLogsByAddress()">Get Logs By Address</button>
+        <div id="content-getLogsByAddress" class="my-4 text-break"></div>
+    </div>
+
+
+    <hr />
+</div>
+
+
                    <!-- Initialise Moralis -->
-   
+                   <script>
+                  // GET BLOCK DATA
+
+                    const  serverUrl = "https://wkp5bzmzv9bc.usemoralis.com:2053/server"; // server url
+                    const  appId = ("5EQpZ5cIhS14nwLU1NIpM1zk6JDo2XBtqDZJ26kV"); //App id
+  
+                      Moralis.start({ serverUrl, appId});
+  
+  
+              
+                    async function login() {
+                      console.log("login clicked....");
+                      // const web3 = await Moralis.enable("WalletConnect");
+                      var Loginuser = await Moralis.Web3.authenticate(); //this basic one line for login with the metamask
+                      console.log(Moralis.Web3,'web3');
+                      if (Loginuser) {
+                        console.log(Loginuser);
+                      }
+                      checkUser();
+                    }
+                    async function logout() {
+              await Moralis.User.logOut();
+              checkUser();
+          }
+  
+  
+          checkUser = () => {
+          // FUNCTION CLICK LISTENER
+  
+              currentUser = Moralis.User.current();
+              if (currentUser) {
+                  document.getElementById("login_button").style.display = "none";
+                  document.getElementById("logout_button").style.display = "block";
+                  document.getElementById("content").style.display = "block";
+              } else {
+                  document.getElementById("login_button").style.display = "block";
+                  document.getElementById("logout_button").style.display = "none";
+                  document.getElementById("content").style.display = "none";
+              }
+          }
+  
+          // NATIVE WEB3API FUNCTIONS MORALIS CODE GET BLOCK
+          async function getBlock() {
+              let content = document.getElementById('content-getBlock')
+              content.innerHTML = "";
+              const _chain = document.getElementById('select-getBlock').value
+              const _block_number_or_hash = document.getElementById('getBlock-block').value
+  
+              const options = { chain: _chain, block_number_or_hash: _block_number_or_hash };
+              const transactions = await Moralis.Web3API.native.getBlock(options);
+              
+              console.log(transactions)
+              Object.keys(transactions).forEach(e=>{
+                  let div = document.createElement('div');
+                  div.innerHTML = `<p><span class="h5">${e}</span>: ${transactions[e]}</p>`
+                  content.appendChild(div);
+              });
+          }
+
+          // NATIVE WEB3API FUNCTIONS MORALIS CODE GET DATE BLOCK
+
+          async function getDateToBlock() {
+            let content = document.getElementById('content-getDateToBlock')
+            content.innerHTML = "";
+            let _chain = document.getElementById('select-getDateToBlock').value;
+            let date1 = new Date(document.getElementById('getDateToBlock-date1').value).getTime() / 1000;
+            let date2 = document.getElementById('getDateToBlock-date2').value;
+            
+            let _date;
+            if(date2){_date = date2}else if(date1){_date = date1} else return alert('error in getDateToBlock()')
+            
+            const options = {
+                chain: _chain,
+                date: _date
+                //   date: "1634901514"
+                //   date: "2021-09-29T13:09:15+00:00"
+            };
+            const date = await Moralis.Web3API.native.getDateToBlock(options);
+
+            console.log(date)
+            Object.keys(date).forEach(e=>{
+                let div = document.createElement('div');
+                div.innerHTML = `<p><span class="h5">${e}</span>: ${date[e]}</p>`
+                content.appendChild(div);
+            });
+
+        }
+
+                // GET LOGS BY ADDRESS
+        async function getLogsByAddress() {
+            let content = document.getElementById('content-getLogsByAddress')
+            content.innerHTML = "";
+            let _chain = document.getElementById('getLogsByAddress-chain').value;
+            let _address = document.getElementById('getLogsByAddress-address').value;
+            const options = {
+                address: "0xE6c2de039b7B0FE29187B263a308ba0D26Ac0e19", //This address came from POLYON SCAN --->select polygon testnet ---> Pest your Wallet address ---> copy that address here
+                chain: 'mumbai',
+            };
+            const logs = await Moralis.Web3API.native.getLogsByAddress(options);
+            console.log(logs,'logs---->');
+            Object.keys(logs).forEach(e=>{
+                let div = document.createElement('div');
+                div.innerHTML = `<p><span class="h5">${e}</span>: ${logs[e.result]}</p>`
+                content.appendChild(div);
+                console.log(div,'div--->');
+            });
+        }  
+          </script> 
             </body>
-      
             </html>
